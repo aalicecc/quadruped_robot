@@ -1,0 +1,18 @@
+<launch> 
+    <arg name="sim" default="false" />
+    <arg name="map_pcd_path" default="" />
+    <param name="/use_sim_time" value="$(arg sim)" />
+
+    <node name="xpkg_pcd_localization" pkg="xpkg_pcd_localization" type="pcd_localization" output="screen">
+        <!-- parameter -->
+        <param name="target_map_path" value="$(arg map_pcd_path)" />
+        <rosparam file="$(find pcd_localization)/config/pcd_localization.yaml"/>
+        <!-- subscribe -->
+        <remap from="init_trans" to="initialpose" />
+        <remap from="lidar_points" to="rslidar_points" />
+        <!-- publish -->
+        <remap from="sensor_trans" to="sensor_trans" />
+        <remap from="map_points" to="map_points" />
+        <remap from="debug_points" to="debug_points" />
+    </node>
+</launch>

@@ -1,0 +1,22 @@
+<launch>
+    <arg name="sim" default="true" />
+    <param name="/use_sim_time" value="$(arg sim)" />
+
+    <!-- undistort -->
+    <node name="pcd_preprocess" pkg="pcd_preprocess" type="pcd_preprocess" output="screen" >
+        <!-- parameter -->
+        <rosparam file="$(find pcd_preprocess)/config/ros1/pcd_preprocess.yaml"/>
+        <!-- subscribe -->
+        <remap from="/lidar" to="/livox/lidar" />
+        <remap from="/imu" to="/livox/imu" />
+        <remap from="/odom" to="/odom" />
+        <!-- publish -->
+        <remap from="/raw_cloud" to="/raw_cloud" />
+        <remap from="/processed_cloud" to="/processed_cloud" />
+    </node>
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz"
+          args="-d $(find pcd_preprocess)/config/ros1/pcd_preprocess.rviz" />
+
+</launch>

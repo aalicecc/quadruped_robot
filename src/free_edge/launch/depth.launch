@@ -1,0 +1,24 @@
+<launch> 
+    <arg name="sim" default="true" />
+    <param name="/use_sim_time" value="$(arg sim)" />
+
+    <!-- free edge -->
+    <node name="free_edge" pkg="free_edge" type="free_edge" output="screen" >
+        <!-- parameter -->
+        <rosparam file="$(find free_edge)/config/depth.yaml"/>
+        <!-- subscribe -->
+        <remap from="point_cloud" to="depth" />
+        <!-- publish -->
+        <remap from="obstacle_scan" to="obstacle_scan" />
+        <remap from="obstacle_cloud" to="obstacle_cloud" />
+    </node>
+
+    <!-- static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="depth_scan_in_depth"
+          args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 depth depth_scan 100" />
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz"
+          args="-d $(find free_edge)/config/depth.rviz" />
+
+</launch>

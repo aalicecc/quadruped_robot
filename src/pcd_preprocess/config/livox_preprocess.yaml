@@ -1,0 +1,18 @@
+# filter
+filter_height: [-0.5, 2.0]
+filter_fov: [-2.35619449, 2.35619449]
+filter_distance: [0.1, 100.0]
+
+# flag
+# 0: raw_mode 1: imu_mode 2: odom_mode
+flag_mode: 1
+
+# sensor 
+sensor_frame: "livox_flat"
+sensor_lidar_period: 0.1
+sensor_imu_period: 0.005
+sensor_odom_period: 0.02
+# [qw, qx, qy, qz]
+sensor_imu_in_sensor: [1.0, 0.0, 0.0, 0.0]
+# [x, y, z, qw, qx, qy, qz]
+sensor_sensor_in_base: [0.0, 0.0, 0.0, 0.6929114, -0.1409744, 0.1409744, -0.6929114]
