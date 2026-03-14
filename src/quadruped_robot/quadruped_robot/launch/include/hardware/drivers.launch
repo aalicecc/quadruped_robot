@@ -1,0 +1,27 @@
+<launch>
+    <arg name="use_imu" default="false" />
+
+    # vehicle
+    <node name="xnode_vehicle" pkg="xpkg_vehicle" type="xnode_vehicle" respawn="false" output="screen" required="false">
+        <param name="can_device" value="can0"/>
+        <param name="calc_odom_from_speed" value="false"/>
+        <remap from="/cmd_vel" to="/cmd_vel" />
+        <remap from="/odom" to="/odom" />
+    </node>
+
+    # mid360
+    <include file="$(find livox_ros_driver2)/launch_ROS1/msg_MID360.launch" />
+
+    # imu
+    <group if="$(arg use_imu)">
+        <node name="xnode_imu" pkg="xpkg_imu" type="xnode_imu" respawn="false" output="screen" required="false">
+            <param name="can_device" value="can0"/>
+            <param name="frame_name" value="imu_frame"/>
+            <param name="specify_id_type" value="0"/>
+            <param name="specify_id_number" value="0"/>
+            <remap from="/imu_data" to="/imu_data" />
+            <remap from="/magnetic_data" to="/magnetic_data" />
+        </node>
+    </group>
+    
+</launch>

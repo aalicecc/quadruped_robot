@@ -1,0 +1,27 @@
+# filter
+filter_height: [-1.0, 2.0]
+filter_fov: [-1.57, 1.57]
+filter_distance: [0.1, 10.0]
+filter_fov_num: 150
+filter_distance_num: 200
+
+# flag
+flag_pub_cloud: true
+
+# obstacle
+obstacle_cloud_num: 2
+obstacle_change_distance: 2.0
+obstacle_far_range: 0.03
+obstacle_far_gap: 0.0
+obstacle_near_constant: 0.1
+obstacle_near_factor: 0.0
+
+# sensor
+sensor_frame: "livox_flat"
+sensor_scan_frame: "livox_flat"
+sensor_scan_repeat: 5
+# [qw, qx, qy, qz]
+sensor_orientation: [1.0, 0.0, 0.0, 0.0]
+sensor_senser_in_base: [0.16013, 0.0000, 0.22777, 1.0, 0.0, 0.0, 0.0]
+sensor_lidar_period: 0.1
+sensor_odom_period: 0.02

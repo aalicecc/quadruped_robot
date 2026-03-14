@@ -4,7 +4,7 @@
     <version>0.0.0</version>
     <description>The pcd_localization package</description>
     <maintainer email="925025459@qq.com">aalicecc</maintainer>
-    <license>GPL-3.0 license</license>
+    <license>MIT</license>
 
     <buildtool_depend>catkin</buildtool_depend>
 

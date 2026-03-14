@@ -1,0 +1,43 @@
+<launch>
+    <arg name="teb_planner" default="false" />
+    <arg name="map_name" default="default" />
+
+    # map broadcaster
+    <node pkg="map_manager" type="map2d_broadcaster.py" name="map_broadcaster" output="screen" >
+        <param name="yaml_path" value="$(find map_manager)/output/$(arg map_name)/map2d/map.yaml" />
+        <param name="trinary_flag" value="false" />
+    </node>
+
+    # move base
+    <group if="$(arg teb_planner)">
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/global_costmap_params.yaml" command="load" />
+
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/move_base.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/global_planner/base_global_planner_params.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/local_planner/teb_local_planner_params.yaml" command="load" />
+        </node>
+    </group>
+    <group unless="$(arg teb_planner)">
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/costmap/global_costmap_params.yaml" command="load" />
+
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/move_base.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/global_planner/base_global_planner_params.yaml" command="load" />
+            <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/config/local_planner/dwa_local_planner_params.yaml" command="load" />
+        </node>
+    </group>
+
+</launch>

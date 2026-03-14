@@ -1,0 +1,38 @@
+<launch>
+    <arg name="env_mode" default="mixed" doc="indoor, outdoor, mixed" />
+
+    <group if="$(eval arg('env_mode') == 'indoor')">
+        <rosparam command="load" file="$(find quadruped_robot)/quadruped_robot/launch/include/localization/config/mid360_indoor.yaml" />
+        <param name="feature_extract_enable" type="bool" value="0"/>
+        <param name="point_filter_num" type="int" value="3"/>
+        <param name="max_iteration" type="int" value="3" />
+        <param name="filter_size_surf" type="double" value="0.05" />
+        <param name="filter_size_map" type="double" value="0.05" />
+        <param name="cube_side_length" type="double" value="1000" />
+        <param name="runtime_pos_log_enable" type="bool" value="0" />
+    </group>
+    <group if="$(eval arg('env_mode') == 'outdoor')">
+        <rosparam command="load" file="$(find quadruped_robot)/quadruped_robot/launch/include/mapping/config/mid360_outdoor.yaml" />
+        <param name="feature_extract_enable" type="bool" value="0"/>
+        <param name="point_filter_num" type="int" value="3"/>
+        <param name="max_iteration" type="int" value="3" />
+        <param name="filter_size_surf" type="double" value="0.5" />
+        <param name="filter_size_map" type="double" value="0.5" />
+        <param name="cube_side_length" type="double" value="1000" />
+        <param name="runtime_pos_log_enable" type="bool" value="0" />
+    </group>
+    <group if="$(eval arg('env_mode') == 'mixed')">
+        <rosparam command="load" file="$(find quadruped_robot)/quadruped_robot/launch/include/mapping/config/mid360_mixed.yaml" />
+        <param name="feature_extract_enable" type="bool" value="0"/>
+        <param name="point_filter_num" type="int" value="3"/>
+        <param name="max_iteration" type="int" value="3" />
+        <param name="filter_size_surf" type="double" value="0.5" />
+        <param name="filter_size_map" type="double" value="0.5" />
+        <param name="cube_side_length" type="double" value="1000" />
+        <param name="runtime_pos_log_enable" type="bool" value="0" />
+    </group>
+
+    <node pkg="fast_lio" type="fastlio_mapping" name="laserMapping" output="screen" >
+        <remap from="Odometry" to="lio_odom" />
+    </node>
+</launch>

@@ -1,0 +1,34 @@
+<launch>
+    <arg name="use_imu" default="false" />
+    <arg name="env_mode" default="mixed" doc="indoor, outdoor, mixed" />
+    <arg name="localization_mode" default="wheel" doc="wheel, ekf, fastlio" />
+    <arg name="map_name" default="default" />
+    <arg name="teb_planner" default="false" />
+
+    # hardware
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/hardware/bringup.launch" >
+        <arg name="use_imu" value="$(arg use_imu)" />
+    </include>
+    
+    # localization
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/localization/pcd_localization.launch">
+        <arg name="env_mode" value="$(arg env_mode)" />
+        <arg name="localization_mode" value="$(arg localization_mode)" />
+        <arg name="map_name" value="$(arg map_name)" />
+    </include>
+
+    # perception
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/perception/lidar_filter.launch" />
+
+    # navigation
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/navigation/move_base.launch">
+        <arg name="teb_planner" value="$(arg teb_planner)" />
+        <arg name="map_name" value="$(arg map_name)" />
+    </include>
+
+    # visualization
+    <node pkg="rviz" type="rviz" name="nav_rviz" args="-d $(find quadruped_robot)/quadruped_robot/config/rviz_nav.rviz" >
+        <param name="ini_path" value="$(find map_manager)/output/default/memory.json" />
+    </node>
+
+</launch>

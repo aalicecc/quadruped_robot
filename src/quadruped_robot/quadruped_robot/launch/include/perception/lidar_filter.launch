@@ -1,0 +1,28 @@
+<launch> 
+
+    # preprocess
+    <node name="pcd_preprocess" pkg="pcd_preprocess" type="pcd_preprocess" output="screen" >
+        # parameter
+        <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/perception/config/livox_preprocess.yaml"/>
+        # subscribe
+        <remap from="/lidar" to="/livox/lidar" />
+        <remap from="/imu" to="/livox/imu" />
+        <remap from="/odom" to="/odom" />
+        # publish
+        <remap from="/raw_cloud" to="/raw_cloud" />
+        <remap from="/processed_cloud" to="/processed_cloud" />
+    </node>
+
+    # free edge
+    <node name="free_edge" pkg="free_edge" type="free_edge" output="screen" >
+        # parameter
+        <rosparam file="$(find quadruped_robot)/quadruped_robot/launch/include/perception/config/free_edge.yaml"/>
+        # subscribe
+        <remap from="point_cloud" to="processed_cloud" />
+        <remap from="odom" to="odom" />
+        # publish
+        <remap from="obstacle_scan" to="obstacle_scan" />
+        <remap from="obstacle_cloud" to="obstacle_cloud" />
+    </node>
+
+</launch>

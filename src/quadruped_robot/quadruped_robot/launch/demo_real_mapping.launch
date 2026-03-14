@@ -1,0 +1,20 @@
+<launch>
+    <arg name="use_imu" default="false" />
+    <arg name="env_mode" default="indoor" doc="indoor, outdoor, mixed" />
+
+    # hardware
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/hardware/bringup.launch" >
+        <arg name="use_imu" value="$(arg use_imu)" />
+    </include>
+
+    # mapping
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/mapping/fast_lio_sam_mapping.launch" >
+        <arg name="env_mode" value="$(arg env_mode)" />
+        <arg name="rviz" value="true" />
+    </include>
+    <node pkg="tf" type="static_transform_publisher" name="livox_frame_in_world"
+          args="0.0 0.0 0.0 -0.1409744 0.1409744 -0.6929114 0.6929114 world camera_init 100" />
+    <node pkg="tf" type="static_transform_publisher" name="chassis_in_body"
+          args="0.0 0.0 0.0 0.1409744 -0.1409744 0.6929114 0.6929114 body chassis 100" />
+
+</launch>

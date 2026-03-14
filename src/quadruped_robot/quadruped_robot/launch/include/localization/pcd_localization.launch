@@ -1,0 +1,55 @@
+<launch>
+    <arg name="env_mode" default="mixed" doc="indoor, outdoor, mixed" />
+    <arg name="localization_mode" default="wheel" doc="wheel, ekf, fastlio" />
+    <arg name="map_name" default="default"/>
+
+    # pcd localization
+    <node name="pcd_localization" pkg="pcd_localization" type="pcd_localization" output="screen">
+        # parameters
+        <param name="target_map_path" value="$(find map_manager)/output/$(arg map_name)/FinalMap.pcd" />
+        <rosparam command="load" file="$(find quadruped_robot)/quadruped_robot/launch/include/localization/config/pcd_localization_$(arg env_mode).yaml" />
+        # subscribe
+        <remap from="init_trans" to="initialpose" />
+        <remap from="lidar_points" to="processed_cloud" />
+        # publish
+        <remap from="sensor_trans" to="sensor_trans" />
+        <remap from="map_points" to="map_points" />
+        <remap from="debug_points" to="debug_points" />
+    </node>
+
+    # robot localization
+    <group if="$(eval arg('localization_mode') == 'ekf')">
+        <include file="$(find quadruped_robot)/quadruped_robot/launch/include/localization/robot_localization.launch" />
+        <node name='odom_tf' pkg='quadruped_robot' type='odom_tf.py' output='screen' >
+            # parameter
+            <rosparam param="sensor_in_base">[0.16013, 0.0000, 0.22777, 1.0000000, 0.0000000, 0.0000000, 0.0000000]</rosparam>
+            # subscribe
+            <remap from="/odom" to="/odometry/filtered" />
+        </node>
+    </group>
+
+    # fastlio localization
+    <group if="$(eval arg('localization_mode') == 'fastlio')">
+        <include file="$(find quadruped_robot)/quadruped_robot/launch/include/localization/fastlio_localization.launch" >
+            <arg name="env_mode" value="$(arg env_mode)" />
+        </include>
+        <node name='odom_tf' pkg='quadruped_robot' type='odom_tf.py' output='screen' >
+            # parameter
+            <rosparam param="sensor_in_base">[0.16013, 0.0000, 0.22777, 0.6929114, -0.1409744, 0.1409744, -0.6929114]</rosparam>
+            # subscribe
+            <remap from="/odom" to="/lio_odom" />
+        </node>
+    </group>
+
+    # wheel localization
+    <group if="$(eval arg('localization_mode') == 'wheel')">
+        <node name='odom_tf' pkg='quadruped_robot' type='odom_tf.py' output='screen' >
+            # parameter
+            <rosparam param="sensor_in_base">[0.16013, 0.0000, 0.22777, 1.0000000, 0.0000000, 0.0000000, 0.0000000]</rosparam>
+            # subscribe
+            <remap from="/odom" to="/odom" />
+        </node>
+    </group>
+        
+
+</launch>

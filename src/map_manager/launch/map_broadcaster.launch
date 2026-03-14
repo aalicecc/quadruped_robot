@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- map broadcaster -->
+    <node pkg="map_manager" type="map2d_broadcaster.py" name="map2d_broadcaster" output="screen" >
+        <param name="yaml_path" value="$(find map_manager)/output/default/map2d/map.yaml" />
+        <param name="trinary_flag" value="false" />
+    </node>
+
+</launch>

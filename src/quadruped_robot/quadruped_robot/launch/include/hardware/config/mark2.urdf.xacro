@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot name="mark1" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <link name="base_link" />
+    <link name="livox_frame" />
+    <link name="livox_flat" />
+
+    <joint name="livox_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="livox_frame" />
+        <origin xyz="0.16013 0.0000 0.22777" rpy="-0.40142573 0.0 -1.57079633" />
+    </joint>
+
+    <joint name="flat_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="livox_flat" />
+        <origin xyz="0.16013 0.0000 0.22777" rpy="0.0 0.0 0.0" />
+    </joint>
+
+</robot>

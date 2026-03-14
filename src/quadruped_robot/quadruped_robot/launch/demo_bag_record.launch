@@ -1,0 +1,9 @@
+<launch>
+    <arg name="use_imu" default="false" />
+
+    # drivers
+    <include file="$(find quadruped_robot)/quadruped_robot/launch/include/hardware/drivers.launch" >
+        <arg name="use_imu" value="$(arg use_imu)" />
+    </include>
+    
+</launch>
