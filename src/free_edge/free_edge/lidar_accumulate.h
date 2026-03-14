@@ -1,7 +1,7 @@
 #ifndef FREE_EDGE_LIDAR_ACCUMULATE_H_
 #define FREE_EDGE_LIDAR_ACCUMULATE_H_
 
-# include <free_edge/data_interface/base_interface.h>
+#include "free_edge/data_interface/data_interface.h"
 
 namespace postprocess {
 

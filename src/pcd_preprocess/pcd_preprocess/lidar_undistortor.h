@@ -1,7 +1,7 @@
 #ifndef PCD_PREPROCESS_LIDAR_UNDISTORTOR_H_
 #define PCD_PREPROCESS_LIDAR_UNDISTORTOR_H_
 
-#include "pcd_preprocess/data_interface/base_interface.h"
+#include "pcd_preprocess/data_interface/data_interface.h"
 
 namespace preprocess {
 

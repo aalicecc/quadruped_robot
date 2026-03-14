@@ -102,7 +102,7 @@ bool PcdLocalization::Work() {
       StampedTrans fine_sensor_in_map =
           PointsAlignment(sensor_in_map_, sensor_points);
 
-      if (fabs(fine_sensor_in_map.time - sensor_points.time) > 1.0) {
+      if (fabs(fine_sensor_in_map.time.toSec() - sensor_points.time.toSec()) > 1.0) {
         data_interface.Log(LogLevel::kError, "### Diverge ###");
         return false;
       }

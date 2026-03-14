@@ -34,7 +34,7 @@ struct ParameterFlag {
   bool pub_cloud;
 };
 
-ParameterObstacle {
+struct ParameterObstacle {
   int32_t cloud_num;
   double change_distance;
   double far_range;
@@ -43,7 +43,7 @@ ParameterObstacle {
   double near_factor;
 };
 
-ParameterSensor {
+struct ParameterSensor {
   std::string frame;
   std::string scan_frame;
   int32_t repeat_times;

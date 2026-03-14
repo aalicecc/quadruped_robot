@@ -20,7 +20,7 @@ bool FreeEdge::Init() {
   acc_lidar_ = StampedCloud();
   obstacle_cloud_ = StampedCloud();
   obstacle_scan_ = sensor_msgs::LaserScan();
-  obstacle_scan_.distances = std::vector<float>(kparameter_filter_.fov_num,
+  obstacle_scan_.ranges = std::vector<float>(kparameter_filter_.fov_num,
                                                 kparameter_filter_.distance[1]);
   obstacle_scan_.intensities =
       std::vector<float>(kparameter_filter_.fov_num, 10.0);
@@ -149,11 +149,11 @@ void FreeEdge::MarkObstacle() {
 }
 
 void FreeEdge::CreateObstacleScan() {
-  obstacle_scan_.time = acc_lidar_.time;
+  obstacle_scan_.header.stamp = acc_lidar_.time;
   for (int32_t i = 0; i < kparameter_filter_.fov_num; i++) {
-    obstacle_scan_.distances[i] = kparameter_filter_.distance[1] - 1e-5;
+    obstacle_scan_.ranges[i] = kparameter_filter_.distance[1] - 1e-5;
     if (obstacle_index_[i] < kparameter_filter_.distance_num) {
-      obstacle_scan_.distances[i] =
+      obstacle_scan_.ranges[i] =
           kparameter_filter_.distance[0] +
           (obstacle_index_[i] + 0.5) * kparameter_filter_.distance_step;
     }
@@ -173,7 +173,7 @@ void FreeEdge::CreateObstacleCloud() {
 void FreeEdge::ResetVariables() {
   acc_lidar_.points->clear();
   obstacle_cloud_.points->clear();
-  obstacle_scan_.distances = std::vector<float>(kparameter_filter_.fov_num,
+  obstacle_scan_.ranges = std::vector<float>(kparameter_filter_.fov_num,
                                                 kparameter_filter_.distance[1]);
   obstacle_index_ = std::vector<int32_t>(kparameter_filter_.fov_num,
                                          kparameter_filter_.distance_num);

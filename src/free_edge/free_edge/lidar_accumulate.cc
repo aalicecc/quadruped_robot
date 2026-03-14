@@ -1,5 +1,6 @@
 #include "free_edge/lidar_accumulate.h"
 #include <pcl/common/transforms.h>
+#include <tf2_eigen/tf2_eigen.h>
 #include <algorithm>
 
 namespace postprocess {
@@ -26,7 +27,7 @@ void LidarAccumulate::AddOdom(
   std::inplace_merge(odom_queue_.begin(), odom_queue_.begin() + old_size,
                      odom_queue_.end(),
                      [](const nav_msgs::Odometry& a, const nav_msgs::Odometry& b) {
-                       return a.time < b.time;
+                       return a.header.stamp < b.header.stamp;
                      });
 }
 
@@ -85,7 +86,7 @@ const StampedCloud& LidarAccumulate::AccumulateCloud(
 
 bool LidarAccumulate::RemoveOldOdom(const ros::Time& timestamp) {
   static DataInterface& data_interface = DataInterface::GetSingleton();
-  ros::Time time_bound = timestamp - 4.0 * kparameter_sensor_.odom_period;
+  ros::Time time_bound = timestamp - ros::Duration(4.0 * kparameter_sensor_.odom_period);
 
   if (odom_queue_.empty()) {
     data_interface.Log(LogLevel::kError, "pose list empty");
@@ -97,7 +98,7 @@ bool LidarAccumulate::RemoveOldOdom(const ros::Time& timestamp) {
     return false;
   }
 
-  while (odom_queue_.front().time < time_bound) {
+  while (odom_queue_.front().header.stamp < time_bound) {
     odom_queue_.pop_front();
     if (odom_queue_.empty()) {
       return false;
@@ -115,29 +116,33 @@ Eigen::Affine3d LidarAccumulate::CurrentTrans(const ros::Time& timestamp) {
     return Eigen::Affine3d::Identity();
   }
 
-  if (timestamp < odom_queue_.front().time) {
+  if ((timestamp - odom_queue_.front().header.stamp).toSec()) {
     data_interface.Log(LogLevel::kError,
                        "free_edge: timestamp is too early: %fs earlier",
-                       timestamp - odom_queue_.front().time);
+                       timestamp - odom_queue_.front().header.stamp);
     return Eigen::Affine3d::Identity();
   }
 
-  if (timestamp > odom_queue_.back().time) {
+  if (timestamp > odom_queue_.back().header.stamp) {
     size_t back_index = odom_queue_.size() - 1;
     double alpha =
-        (timestamp - odom_queue_[back_index].time) /
-        (odom_queue_[back_index].time - odom_queue_[back_index - 1].time);
-    return PredictTrans(odom_queue_[back_index].base_in_odom,
-                        odom_queue_[back_index - 1].base_in_odom, alpha);
+        (timestamp - odom_queue_[back_index].header.stamp).toSec() /
+        (odom_queue_[back_index].header.stamp - odom_queue_[back_index - 1].header.stamp).toSec();
+    Eigen::Affine3d pose_1, pose_2;
+    tf2::fromMsg(odom_queue_[back_index].pose.pose, pose_1);
+    tf2::fromMsg(odom_queue_[back_index - 1].pose.pose, pose_2);
+    return PredictTrans(pose_1, pose_2, alpha);
   }
 
   for (size_t i = 0; i < odom_queue_.size() - 1; ++i) {
-    if (timestamp >= odom_queue_[i].time &&
-        timestamp < odom_queue_[i + 1].time) {
-      double alpha = (timestamp - odom_queue_[i].time) /
-                     (odom_queue_[i + 1].time - odom_queue_[i].time);
-      return InterpolateTrans(odom_queue_[i].base_in_odom,
-                              odom_queue_[i + 1].base_in_odom, alpha);
+    if (timestamp >= odom_queue_[i].header.stamp &&
+        timestamp < odom_queue_[i + 1].header.stamp) {
+      double alpha = ((timestamp - odom_queue_[i].header.stamp)).toSec() /
+                     ((odom_queue_[i + 1].header.stamp - odom_queue_[i].header.stamp)).toSec();
+      Eigen::Affine3d pose_1, pose_2;
+      tf2::fromMsg(odom_queue_[i].pose.pose, pose_1);
+      tf2::fromMsg(odom_queue_[i + 1].pose.pose, pose_2);
+      return InterpolateTrans(pose_1, pose_2, alpha);
     }
   }
 

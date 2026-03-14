@@ -224,7 +224,7 @@ void DataInterface::OdomHandle(const nav_msgs::OdometryPtr& msg) {
   if (ros::Time::now().toSec() - msg->header.stamp.toSec() < 0.1) {
     std::lock_guard<std::mutex> lock(odom_mutex_);
 
-    curr_odom.time = msg->header.stamp;
+    curr_odom.header.stamp = msg->header.stamp;
     curr_odom = *msg;
 
     odom_buffer_.emplace_back(curr_odom);
