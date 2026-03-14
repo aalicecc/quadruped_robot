@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 map_name=$1
 if [ -z "$map_name" ]; then
     map_name="default"
