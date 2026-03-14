@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
 import json
 import math
 import numpy as np
@@ -117,6 +119,7 @@ class TransModifier:
 
 
 def main():
+    print(222)
     map_name = "default"
     if len(sys.argv) > 1:
         map_name = sys.argv[1]
@@ -124,7 +127,7 @@ def main():
     raw_trans_path = f"{MAP_DIR}/{map_name}/{RAW_TRANS_FILE}"
     base_trans_path = f"{MAP_DIR}/{map_name}/{BASE_TRANS_FILE}"
     json_path = f"{MAP_DIR}/{map_name}/{JSON_FILE}"
-
+    print(111)
     trans_modifier = TransModifier(
         raw_trans_path=raw_trans_path,
         base_trans_path=base_trans_path,

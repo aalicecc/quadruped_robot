@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 bag_name=$1
 if [ -z "$bag_name" ]; then
     bag_name="mark2_test_$(date -d today +%Y%m%d_%H%M%S)"
